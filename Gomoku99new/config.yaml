@@ -1,0 +1,41 @@
+# 1. 训练控制参数
+training:
+  max_iterations: 1000
+  num_games_per_iteration: 50
+
+# 2. MCTS (蒙特卡洛树搜索) 参数
+mcts:
+  simulations: 200            # 【推荐】提升思考深度，这是提升棋力的关键
+  cpuct: 1.5                  # 探索因子
+
+# 3. 神经网络训练参数
+network:
+  num_res_blocks: 5           # ResNet的残差块数量
+  num_channels: 128           # 卷积层的通道数 (特征维度)
+  dropout_rate: 0.3           # Dropout比率
+  batch_size: 256
+  initial_lr: 0.001           # 【推荐】使用ResNet时，稍小的初始学习率更稳定
+  weight_decay: 0.0001
+
+
+# 4. 学习率调度器 (ReduceLROnPlateau)
+scheduler:
+  patience: 15
+  factor: 0.5
+  min_lr: 0.000001
+
+# 5. 损失函数与探索
+loss:
+  value_loss_weight: 1.0      # Policy和Value同等重要
+  dirichlet_alpha: 0.3
+  dirichlet_epsilon: 0.25
+
+# 6. 数据集划分
+data:
+  replay_buffer_size: 20000
+  validation_split: 0.2
+  test_split: 0.1
+
+# 7. 检查点文件路径
+checkpoint:
+  path: "az_checkpoint.pth"
