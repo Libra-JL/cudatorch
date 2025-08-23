@@ -61,6 +61,9 @@
 
 # OMP: Hint This means that multiple copies of the OpenMP runtime have been linked into the program. That is dangerous, since it can degrade performance or cause incorrect results. The best thing to do is to ensure that only a single OpenMP runtime is linked into the process, e.g. by avoiding static linking of the OpenMP runtime in any library. As an unsafe, unsupported, undocumented workaround you can set the environment variable KMP_DUPLICATE_LIB_OK=TRUE to allow the program to continue to execute, but that may cause crashes or silently produce incorrect results. For more information, please see http://www.intel.com/software/products/support/.
 import os
+
+from CNN.alexnet.AlexNet import AlexNet
+
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 import torch
 from PIL import Image
@@ -75,10 +78,19 @@ from CNN.lenet5.LeNet5_PyTorch import LeNet5
 class InvertColor(object):
     def __call__(self, tensor):
         return F.invert(tensor)
+# lenet5
+# transform = transforms.Compose([
+#     transforms.Grayscale(num_output_channels=1),
+#     transforms.Resize((28, 28)),
+#     transforms.ToTensor(),
+#     # InvertColor(), # 如果你的图片是白底黑字，则保留此行
+#     transforms.Normalize((0.5,), (0.5,))
+# ])
 
+# alexnet
 transform = transforms.Compose([
     transforms.Grayscale(num_output_channels=1),
-    transforms.Resize((28, 28)),
+    transforms.Resize((224, 224)),
     transforms.ToTensor(),
     # InvertColor(), # 如果你的图片是白底黑字，则保留此行
     transforms.Normalize((0.5,), (0.5,))
@@ -86,13 +98,15 @@ transform = transforms.Compose([
 
 # --- 2. 加载模型 ---
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = LeNet5().to(device)
-model.load_state_dict(torch.load("LeNet5_PyTorch.pth", map_location=device))
+# model = LeNet5().to(device)
+# model.load_state_dict(torch.load("LeNet5_PyTorch.pth", map_location=device))
+model = AlexNet().to(device)
+model.load_state_dict(torch.load("../alexnet/alexNet4fashionMinist.pth", map_location=device))
 model.eval()  # 设置为评估模式
 
 # --- 3. 加载并处理你的图片 ---
 try:
-    image_raw = Image.open("3.png") #
+    image_raw = Image.open("6.png") #
 except FileNotFoundError:
     print("错误：请将 'your_digit_image.png' 替换为你的手写数字图片路径！")
     exit()
