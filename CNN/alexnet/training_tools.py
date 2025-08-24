@@ -74,7 +74,7 @@ class Trainer:
         loss = total_loss / len(data_loader)
         return accuracy, loss
 
-    def train(self, epochs_num: int):
+    def train(self, epochs_num: int,save_model_path: str):
         for epoch in range(epochs_num):
             accuracy_train, loss_train = self._run_epoch(self.train_loader, mode='train')
             accuracy_test, loss_test = self.evaluate()  # 调用评估方法
@@ -88,7 +88,7 @@ class Trainer:
             print(f'第 {epoch + 1:03}/{epochs_num} 轮，'
                   f'训练损失：{loss_train:.4f}，训练精度：{accuracy_train:05.2f}%，'
                   f'测试损失：{loss_test:.4f}，测试精度：{accuracy_test:05.2f}%')
-        torch.save(self.model.state_dict(),'./alexNet4fashionMinist.pth')
+        torch.save(self.model.state_dict(),save_model_path)
         print('模型训练完成，已保存')
 
     def evaluate(self):
